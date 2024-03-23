@@ -33,7 +33,8 @@ var sabores = new List<Pizza> {
 
 app.MapGet("/cardapio", () => { 
     return sabores;
-});
+})
+.WithName("Todos os Sabores");
 
 app.MapGet("/cardapio/{id}", (int id) => { 
     var sabor = sabores.Find(sabor => sabor.id == id);
@@ -49,8 +50,10 @@ app.MapGet("/cardapio/{id}", (int id) => {
 
 app.MapPost("/cardapio", (Pizza pizza) => {
     sabores.Add(pizza);
-    return sabores;
-});
+    return Results.Created("",sabores);
+})
+.WithName("Inserindo um novo sabor de pizza")
+.RequireAuthorization();
 
 app.MapPut("/cardapio/{id}", (Pizza updateCardapio, int id) => {
     var sabor = sabores.Find(sabor => sabor.id == id);
@@ -62,7 +65,9 @@ app.MapPut("/cardapio/{id}", (Pizza updateCardapio, int id) => {
     sabor.nome = updateCardapio.nome;
 
     return Results.Ok(sabor);
-});
+})
+.WithName("Atualizando sabor específico")
+.RequireAuthorization();
 
 app.MapDelete("/cardapio/{id}", (int id) => { 
     var sabor = sabores.Find(sabor => sabor.id == id);
@@ -74,7 +79,9 @@ app.MapDelete("/cardapio/{id}", (int id) => {
     sabores.Remove(sabor);
 
     return Results.Ok(sabor);
-});
+})
+.WithName("Deletar um sabor do cardápio")
+.RequireAuthorization();
 
 app.Run();
 
