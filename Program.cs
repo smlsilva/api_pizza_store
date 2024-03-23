@@ -1,9 +1,20 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ApplicationDbContext>(
+    options => options.UseInMemoryDatabase("AppDb"));
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.MapIdentityApi<IdentityUser>();
 
 if(app.Environment.IsDevelopment()) {
     app.UseSwagger();
@@ -32,7 +43,9 @@ app.MapGet("/cardapio/{id}", (int id) => {
     }
 
     return Results.Ok(sabor);
-});
+})
+.WithName("Pegando sabor especifico")
+.RequireAuthorization();
 
 app.MapPost("/cardapio", (Pizza pizza) => {
     sabores.Add(pizza);
