@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using pizzastore.pizza;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,10 +85,3 @@ app.MapDelete("/cardapio/{id}", (int id) => {
 .RequireAuthorization();
 
 app.Run();
-
-class Pizza {
-
-    public int id { get; set; }
-
-    public required string nome { get; set; }
-}
