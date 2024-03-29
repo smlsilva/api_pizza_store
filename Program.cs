@@ -1,21 +1,15 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using pizzastore.Endpoints;
+using pizzastore.itf.pizzarepository;
+using pizzastore.repository.pizza;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseInMemoryDatabase("AppDb"));
-builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+builder.Services.AddTransient<IPizza, PizzaRepository>();
 
-app.MapIdentityApi<IdentityUser>();
+var app = builder.Build();
 
 if(app.Environment.IsDevelopment()) {
     app.UseSwagger();
@@ -24,6 +18,6 @@ if(app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 
-app.RegisterPizzaEndpoints();
+app.MapControllers();
 
 app.Run();
